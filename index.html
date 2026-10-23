@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L'Étoile Noir - Fine Dining & Lounge</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              gold: '#D4AF37',
+              goldHover: '#B89628',
+              darkBg: '#0F0F12',
+              cardBg: '#18181F',
+              accentRed: '#E63946',
+              muted: '#A0A0AB',
+              border: '#2A2A36'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Playfair Display"', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar for Sleek Feel */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0F0F12;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2A2A36;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #D4AF37;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
+    /* Subtle Glassmorphism */
+    .glass-nav {
+      background: rgba(15, 15, 18, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .glass-card {
+      background: rgba(24, 24, 31, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+  </style>
+</head>
+<body class="bg-brand-darkBg text-gray-100 font-sans antialiased min-h-screen pb-24 selection:bg-brand-gold selection:text-black">
+
+  <!-- TOP HEADER / NAV BAR -->
+  <header class="sticky top-0 z-40 glass-nav border-b border-brand-border/60 transition-all duration-300">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+      <!-- Restaurant Identity -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-gold to-yellow-100 p-0.5 shadow-md shadow-brand-gold/10">
+          <div class="w-full h-full bg-brand-darkBg rounded-full flex items-center justify-center">
+            <i class="fa-solid font-serif text-brand-gold text-lg">É</i>
+          </div>
+        </div>
+        <div>
+          <h1 id="restaurant-nav-title" class="font-serif font-bold text-lg text-white leading-none">L'Étoile Noir</h1>
+          <p class="text-[11px] text-brand-muted mt-0.5 flex items-center gap-1">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Table <span id="table-badge-number">14</span> • Open Now
+          </p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center space-x-2">
+        <!-- Search Trigger -->
+        <button id="search-toggle-btn" class="p-2.5 rounded-full bg-brand-cardBg hover:bg-brand-border border border-brand-border/80 text-gray-300 hover:text-white transition" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass text-sm"></i>
+        </button>
+
+        <!-- Wishlist / Order Tray Trigger -->
+        <button id="cart-drawer-toggle" class="relative p-2.5 rounded-full bg-brand-cardBg hover:bg-brand-border border border-brand-border/80 text-gray-300 hover:text-white transition">
+          <i class="fa-solid fa-bookmark text-sm"></i>
+          <span id="wishlist-badge" class="absolute -top-1 -right-1 bg-brand-gold text-black text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center opacity-0 scale-75 transition-all duration-300">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- EXPANDABLE SEARCH BAR -->
+    <div id="search-bar-container" class="hidden max-w-4xl mx-auto px-4 pb-3">
+      <div class="relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-muted text-sm"></i>
+        <input type="text" id="menu-search-input" placeholder="Search dishes, ingredients, or drinks..." 
+               class="w-full bg-brand-darkBg border border-brand-border text-sm text-white pl-10 pr-10 py-2.5 rounded-xl focus:outline-none focus:border-brand-gold transition placeholder-brand-muted/70">
+        <button id="clear-search-btn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-brand-muted hover:text-white text-xs p-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO BANNER SECTION -->
+  <section class="relative max-w-4xl mx-auto px-4 pt-4 pb-2">
+    <div class="relative h-48 md:h-64 rounded-3xl overflow-hidden border border-brand-border/80 shadow-2xl">
+      <!-- Background Image with Overlay -->
+      <img id="hero-image" src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80" alt="Restaurant Interior" class="w-full h-full object-cover object-center">
+      <div class="absolute inset-0 bg-gradient-to-t from-brand-darkBg via-brand-darkBg/60 to-transparent"></div>
+
+      <!-- Hero Content Overlay -->
+      <div class="absolute bottom-4 left-4 right-4 flex flex-col md:flex-row justify-between items-start md:items-end gap-3">
+        <div>
+          <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-brand-gold/20 text-brand-gold border border-brand-gold/30 mb-2">
+            Contemporary Parisian Dining
+          </span>
+          <h2 id="hero-restaurant-name" class="font-serif text-2xl md:text-3xl font-bold text-white tracking-wide">L'Étoile Noir</h2>
+          <p id="hero-tagline" class="text-xs md:text-sm text-gray-300 mt-1 max-w-md">
+            Artisanal French cuisine infused with vibrant modern Asian gastronomy.
+          </p>
+        </div>
+
+        <!-- Quick Info Badges -->
+        <div class="flex flex-wrap items-center gap-2 text-xs text-gray-300">
+          <div class="bg-brand-cardBg/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-brand-border flex items-center gap-1.5">
+            <i class="fa-regular fa-clock text-brand-gold"></i>
+            <span id="hero-hours">5:00 PM - 11:00 PM</span>
+          </div>
+          <div class="bg-brand-cardBg/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-brand-border flex items-center gap-1.5">
+            <i class="fa-solid fa-location-dot text-brand-gold"></i>
+            <span>Main Dining Room</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORY FILTER NAVIGATION (Sticky Tabs) -->
+  <nav class="sticky top-[61px] z-30 glass-nav border-b border-brand-border/40 py-3 my-2">
+    <div id="category-tabs-wrapper" class="max-w-4xl mx-auto px-4 flex items-center space-x-2 overflow-x-auto hide-scrollbar">
+      <!-- Dynamic Category Tabs Render Here -->
+    </div>
+  </nav>
+
+  <!-- MAIN MENU CONTENT -->
+  <main class="max-w-4xl mx-auto px-4 pt-2">
+    <!-- Notice Banner for Search / Filter -->
+    <div id="search-results-label" class="hidden mb-4 text-xs text-brand-muted flex items-center justify-between">
+      <span>Showing results for "<strong id="search-keyword" class="text-white"></strong>"</span>
+      <button onclick="resetSearch()" class="text-brand-gold hover:underline">Reset search</button>
+    </div>
+
+    <!-- Container for Rendered Categories and Dish Cards -->
+    <div id="menu-sections-container" class="space-y-10">
+      <!-- Loading Skeleton -->
+      <div class="space-y-4 animate-pulse">
+        <div class="h-6 w-36 bg-brand-cardBg rounded-lg"></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="h-32 bg-brand-cardBg rounded-2xl"></div>
+          <div class="h-32 bg-brand-cardBg rounded-2xl"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ITEM DETAIL MODAL / DRAWER -->
+  <div id="item-modal" class="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
+    <div class="relative w-full max-w-lg bg-brand-cardBg rounded-t-3xl md:rounded-3xl border border-brand-border overflow-hidden shadow-2xl max-h-[90vh] flex flex-col transform translate-y-10 transition-transform duration-300">
+      
+      <!-- Close Button -->
+      <button id="close-modal-btn" class="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black transition">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <!-- Modal Body (Scrollable) -->
+      <div class="overflow-y-auto hide-scrollbar">
+        <!-- Hero Image -->
+        <div class="relative h-64 w-full bg-brand-darkBg">
+          <img id="modal-item-img" src="" alt="" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-brand-cardBg via-transparent to-transparent"></div>
+        </div>
+
+        <!-- Details -->
+        <div class="p-6 space-y-4">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 id="modal-item-title" class="font-serif text-2xl font-bold text-white"></h3>
+              <div id="modal-item-tags" class="flex flex-wrap gap-1.5 mt-2"></div>
+            </div>
+            <span id="modal-item-price" class="text-xl font-bold text-brand-gold font-sans"></span>
+          </div>
+
+          <p id="modal-item-desc" class="text-sm text-gray-300 leading-relaxed"></p>
+
+          <!-- Nutritional & Allergen Info Grid -->
+          <div class="grid grid-cols-2 gap-3 pt-3 border-t border-brand-border/60 text-xs text-gray-400">
+            <div class="bg-brand-darkBg/60 p-3 rounded-xl border border-brand-border/40">
+              <span class="block text-brand-muted text-[10px] uppercase font-semibold">Calories</span>
+              <span id="modal-item-calories" class="font-medium text-gray-200 mt-0.5 block">--</span>
+            </div>
+            <div class="bg-brand-darkBg/60 p-3 rounded-xl border border-brand-border/40">
+              <span class="block text-brand-muted text-[10px] uppercase font-semibold">Allergens</span>
+              <span id="modal-item-allergens" class="font-medium text-gray-200 mt-0.5 block">--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer / Action -->
+      <div class="p-4 bg-brand-darkBg border-t border-brand-border flex items-center gap-3">
+        <button id="modal-add-wishlist-btn" class="w-full py-3.5 px-4 rounded-xl bg-brand-gold hover:bg-brand-goldHover text-black font-semibold text-sm flex items-center justify-center gap-2 transition shadow-lg shadow-brand-gold/10">
+          <i class="fa-solid fa-bookmark"></i>
+          <span>Save to My Order Wishlist</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WISHLIST / ORDER TRAY DRAWER -->
+  <div id="wishlist-drawer" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 flex justify-end">
+    <div id="wishlist-drawer-panel" class="w-full max-w-md bg-brand-cardBg h-full border-l border-brand-border flex flex-col transform translate-x-full transition-transform duration-300">
+      
+      <!-- Drawer Header -->
+      <div class="p-5 border-b border-brand-border flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-bookmark text-brand-gold"></i>
+          <h3 class="font-serif font-bold text-lg text-white">Order Wishlist</h3>
+        </div>
+        <button id="close-wishlist-btn" class="w-8 h-8 rounded-full bg-brand-darkBg text-gray-400 hover:text-white flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Drawer Content -->
+      <div id="wishlist-items-container" class="flex-1 overflow-y-auto p-5 space-y-4">
+        <!-- Rendered Wishlist Items -->
+      </div>
+
+      <!-- Drawer Footer -->
+      <div class="p-5 border-t border-brand-border bg-brand-darkBg space-y-3">
+        <div class="flex items-center justify-between text-sm">
+          <span class="text-brand-muted">Estimated Total:</span>
+          <span id="wishlist-total-price" class="text-xl font-bold text-brand-gold">$0.00</span>
+        </div>
+        <p class="text-[11px] text-brand-muted text-center">
+          Show this list to your server when they arrive to place your order!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // --- EMBEDDED DEFAULT DATASET (Fallback when menu.json is unavailable) ---
+    const DEFAULT_MENU_DATA = {
+      "restaurantName": "L'Étoile Noir",
+      "tagline": "Artisanal French gastronomy infused with modern Asian culinary notes.",
+      "tableNumber": "14",
+      "hours": "5:00 PM - 11:00 PM",
+      "categories": [
+        {
+          "id": "starters",
+          "name": "Starters & Small Plates",
+          "icon": "fa-utensils",
+          "items": [
+            {
+              "id": "item-1",
+              "name": "Pan-Seared Foie Gras",
+              "description": "Seared duck liver with caramelized mission figs, brioche toast, and aged balsamic reduction.",
+              "price": 28.00,
+              "image": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80",
+              "tags": ["Chef Special", "GF Option"],
+              "calories": "520 kcal",
+              "allergens": "Gluten, Dairy",
+              "available": true
+            },
+            {
+              "id": "item-2",
+              "name": "Hamachi Crudo",
+              "description": "Sustainably caught Yellowtail, yuzu kosho vinaigrette, avocado puree, micro cilantro, and sea salt.",
+              "price": 24.00,
+              "image": "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=600&q=80",
+              "tags": ["GF", "Nut-Free", "Halal"],
+              "calories": "310 kcal",
+              "allergens": "Fish",
+              "available": true
+            },
+            {
+              "id": "item-3",
+              "name": "Truffled Mushroom Arancini",
+              "description": "Crispy arborio rice balls filled with wild mushrooms, black truffle paste, and melted fontina.",
+              "price": 19.00,
+              "image": "https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&w=600&q=80",
+              "tags": ["Vegetarian"],
+              "calories": "440 kcal",
+              "allergens": "Gluten, Dairy",
+              "available": true
+            }
+          ]
+        },
+        {
+          "id": "mains",
+          "name": "Signature Mains",
+          "icon": "fa-drumstick-bite",
+          "items": [
+            {
+              "id": "item-4",
+              "name": "A5 Wagyu Striploin",
+              "description": "Miyazaki Prefecture A5 Wagyu, smoked bone marrow butter, roasted baby carrots, truffle jus.",
+              "price": 95.00,
+              "image": "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=600&q=80",
+              "tags": ["Chef Special", "GF", "Halal"],
+              "calories": "780 kcal",
+              "allergens": "Dairy",
+              "available": true
+            },
+            {
+              "id": "item-5",
+              "name": "Chilean Sea Bass",
+              "description": "Miso-glazed sea bass, ginger dashi broth, baby bok choy, and crispy lotus root crisp.",
+              "price": 48.00,
+              "image": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=600&q=80",
+              "tags": ["GF", "Nut-Free"],
+              "calories": "580 kcal",
+              "allergens": "Fish, Soy",
+              "available": true
+            },
+            {
+              "id": "item-6",
+              "name": "Dry-Aged Duck Breast",
+              "description": "Honey-spiced roasted duck breast, spiced plum puree, braised endive, and duck jus.",
+              "price": 42.00,
+              "image": "https://images.unsplash.com/photo-1514944288352-18d9e04bc505?auto=format&fit=crop&w=600&q=80",
+              "tags": ["GF"],
+              "calories": "650 kcal",
+              "allergens": "None",
+              "available": false
+            },
+            {
+              "id": "item-7",
+              "name": "Wild Mushroom Tagliatelle",
+              "description": "Hand-crafted egg pasta, porcini crema, shaved black winter truffles, aged Parmigiano Reggiano.",
+              "price": 34.00,
+              "image": "https://images.unsplash.com/photo-1621996346565-e3d5d6281288?auto=format&fit=crop&w=600&q=80",
+              "tags": ["Vegetarian"],
+              "calories": "620 kcal",
+              "allergens": "Gluten, Dairy, Eggs",
+              "available": true
+            }
+          ]
+        },
+        {
+          "id": "desserts",
+          "name": "Artisanal Desserts",
+          "icon": "fa-ice-cream",
+          "items": [
+            {
+              "id": "item-8",
+              "name": "Valrhona Chocolate Sphere",
+              "description": "Dark chocolate dome, hazelnut praline, warm salted caramel drizzle, tahitian vanilla bean gelato.",
+              "price": 18.00,
+              "image": "https://images.unsplash.com/photo-1579372786545-d24232daf58c?auto=format&fit=crop&w=600&q=80",
+              "tags": ["Vegetarian"],
+              "calories": "510 kcal",
+              "allergens": "Dairy, Nuts, Gluten",
+              "available": true
+            },
+            {
+              "id": "item-9",
+              "name": "Matcha Yuzu Tart",
+              "description": "Uji matcha ganache, yuzu curd, sesame brittle crumble, sweet pastry shell.",
+              "price": 16.00,
+              "image": "https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=600&q=80",
+              "tags": ["Vegetarian"],
+              "calories": "410 kcal",
+              "allergens": "Gluten, Dairy, Sesame",
+              "available": true
+            }
+          ]
+        },
+        {
+          "id": "cocktails",
+          "name": "Craft Cocktails & Wine",
+          "icon": "fa-glass-martini-alt",
+          "items": [
+            {
+              "id": "item-10",
+              "name": "Smoked Old Fashioned",
+              "description": "Japanese Nikka Whisky, Okinawa black sugar, Angostura bitters, infusing applewood smoke.",
+              "price": 22.00,
+              "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80",
+              "tags": ["Chef Special"],
+              "calories": "210 kcal",
+              "allergens": "Alcohol",
+              "available": true
+            },
+            {
+              "id": "item-11",
+              "name": "Yuzu Basil Sparkler",
+              "description": "Fresh yuzu juice, bruised Thai basil, organic agave, sparkling mineral water.",
+              "price": 12.00,
+              "image": "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80",
+              "tags": ["Vegan", "Non-Alcoholic", "GF"],
+              "calories": "95 kcal",
+              "allergens": "None",
+              "available": true
+            }
+          ]
+        }
+      ]
+    };
+
+    // --- APPLICATION STATE ---
+    let menuData = null;
+    let wishlist = [];
+    let activeCategoryId = "all";
+    let searchQuery = "";
+    let activeModalItem = null;
+
+    // --- DOM ELEMENTS ---
+    const menuContainer = document.getElementById('menu-sections-container');
+    const categoryTabsWrapper = document.getElementById('category-tabs-wrapper');
+    const searchToggleBtn = document.getElementById('search-toggle-btn');
+    const searchBarContainer = document.getElementById('search-bar-container');
+    const searchInput = document.getElementById('menu-search-input');
+    const clearSearchBtn = document.getElementById('clear-search-btn');
+    const searchResultsLabel = document.getElementById('search-results-label');
+    const searchKeywordSpan = document.getElementById('search-keyword');
+
+    // Modal DOM
+    const itemModal = document.getElementById('item-modal');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const modalImg = document.getElementById('modal-item-img');
+    const modalTitle = document.getElementById('modal-item-title');
+    const modalTags = document.getElementById('modal-item-tags');
+    const modalPrice = document.getElementById('modal-item-price');
+    const modalDesc = document.getElementById('modal-item-desc');
+    const modalCalories = document.getElementById('modal-item-calories');
+    const modalAllergens = document.getElementById('modal-item-allergens');
+    const modalAddWishlistBtn = document.getElementById('modal-add-wishlist-btn');
+
+    // Wishlist DOM
+    const cartDrawerToggle = document.getElementById('cart-drawer-toggle');
+    const wishlistDrawer = document.getElementById('wishlist-drawer');
+    const wishlistPanel = document.getElementById('wishlist-drawer-panel');
+    const closeWishlistBtn = document.getElementById('close-wishlist-btn');
+    const wishlistItemsContainer = document.getElementById('wishlist-items-container');
+    const wishlistTotalPrice = document.getElementById('wishlist-total-price');
+    const wishlistBadge = document.getElementById('wishlist-badge');
+
+    // --- INITIALIZATION ---
+    window.addEventListener('DOMContentLoaded', () => {
+      loadMenuData();
+      setupEventListeners();
+    });
+
+    // FETCH MENU DATA (With dynamic cache-busting timestamp & fallback)
+    async function loadMenuData() {
+      const timestamp = new Date().getTime();
+      try {
+        const response = await fetch(`menu.json?t=${timestamp}`);
+        if (!response.ok) throw new Error('menu.json not found or unreadable');
+        menuData = await response.json();
+      } catch (error) {
+        console.warn('Fallback to embedded default dataset:', error.message);
+        menuData = DEFAULT_MENU_DATA;
+      }
+
+      renderHeroHeader();
+      renderCategoryTabs();
+      renderMenu();
+    }
+
+    // RENDER HERO / BRANDING INFO
+    function renderHeroHeader() {
+      if (!menuData) return;
+      document.getElementById('restaurant-nav-title').textContent = menuData.restaurantName || "L'Étoile Noir";
+      document.getElementById('hero-restaurant-name').textContent = menuData.restaurantName || "L'Étoile Noir";
+      if (menuData.tagline) document.getElementById('hero-tagline').textContent = menuData.tagline;
+      if (menuData.hours) document.getElementById('hero-hours').textContent = menuData.hours;
+      if (menuData.tableNumber) document.getElementById('table-badge-number').textContent = menuData.tableNumber;
+    }
+
+    // RENDER CATEGORY TAB BUTTONS
+    function renderCategoryTabs() {
+      categoryTabsWrapper.innerHTML = '';
+
+      // "All Dishes" tab
+      const allBtn = createTabButton('all', 'All Items', 'fa-border-all', activeCategoryId === 'all');
+      categoryTabsWrapper.appendChild(allBtn);
+
+      if (menuData && menuData.categories) {
+        menuData.categories.forEach(cat => {
+          const btn = createTabButton(cat.id, cat.name, cat.icon || 'fa-utensils', activeCategoryId === cat.id);
+          categoryTabsWrapper.appendChild(btn);
+        });
+      }
+    }
+
+    function createTabButton(id, label, iconClass, isActive) {
+      const button = document.createElement('button');
+      button.className = `flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 border ${
+        isActive 
+          ? 'bg-brand-gold text-black border-brand-gold shadow-md shadow-brand-gold/10 scale-105' 
+          : 'bg-brand-cardBg text-gray-300 border-brand-border/70 hover:border-brand-gold/50 hover:text-white'
+      }`;
+      button.innerHTML = `<i class="fa-solid ${iconClass} text-xs"></i> <span>${label}</span>`;
+      button.addEventListener('click', () => {
+        activeCategoryId = id;
+        renderCategoryTabs();
+        renderMenu();
+      });
+      return button;
+    }
+
+    // RENDER MENU DISHES
+    function renderMenu() {
+      menuContainer.innerHTML = '';
+
+      if (!menuData || !menuData.categories) return;
+
+      let hasResults = false;
+
+      menuData.categories.forEach(category => {
+        // Filter by tab
+        if (activeCategoryId !== 'all' && activeCategoryId !== category.id) return;
+
+        // Filter items by search query
+        const filteredItems = category.items.filter(item => {
+          const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                (item.tags && item.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase())));
+          return matchesSearch;
+        });
+
+        if (filteredItems.length === 0) return;
+        hasResults = true;
+
+        // Render Category Section
+        const section = document.createElement('section');
+        section.className = "space-y-4";
+
+        section.innerHTML = `
+          <div class="flex items-center gap-2 border-b border-brand-border/60 pb-2">
+            <i class="fa-solid ${category.icon || 'fa-utensils'} text-brand-gold text-sm"></i>
+            <h3 class="font-serif text-xl font-bold text-white">${category.name}</h3>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="cat-grid-${category.id}"></div>
+        `;
+
+        menuContainer.appendChild(section);
+        const grid = document.getElementById(`cat-grid-${category.id}`);
+
+        filteredItems.forEach(item => {
+          grid.appendChild(createDishCard(item));
+        });
+      });
+
+      if (!hasResults) {
+        menuContainer.innerHTML = `
+          <div class="text-center py-16 space-y-3">
+            <div class="w-12 h-12 rounded-full bg-brand-cardBg border border-brand-border flex items-center justify-center mx-auto text-brand-muted">
+              <i class="fa-solid fa-utensils text-lg"></i>
+            </div>
+            <h4 class="text-white font-medium">No dishes found</h4>
+            <p class="text-xs text-brand-muted">Try adjusting your search query or selecting another category.</p>
+          </div>
+        `;
+      }
+    }
+
+    // CREATE DISH CARD ELEMENT
+    function createDishCard(item) {
+      const card = document.createElement('div');
+      card.className = `group relative bg-brand-cardBg border border-brand-border/80 hover:border-brand-gold/40 rounded-2xl p-3 flex gap-3 cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-black/40 ${!item.available ? 'opacity-50' : ''}`;
+
+      // Tags HTML
+      const tagsHtml = (item.tags || []).map(tag => `
+        <span class="text-[9px] px-1.5 py-0.5 rounded-md bg-brand-darkBg text-brand-gold border border-brand-gold/20 font-medium">
+          ${tag}
+        </span>
+      `).join('');
+
+      card.innerHTML = `
+        <!-- Image Thumbnail -->
+        <div class="relative w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden bg-brand-darkBg flex-shrink-0">
+          <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+          ${!item.available ? '<span class="absolute inset-0 bg-black/70 flex items-center justify-center text-[10px] font-bold text-red-400 uppercase tracking-wider">Sold Out</span>' : ''}
+        </div>
+
+        <!-- Content -->
+        <div class="flex-1 flex flex-col justify-between min-w-0">
+          <div>
+            <div class="flex items-start justify-between gap-2">
+              <h4 class="font-bold text-sm text-white group-hover:text-brand-gold transition-colors truncate">${item.name}</h4>
+              <span class="text-sm font-bold text-brand-gold font-sans">${formatPrice(item.price)}</span>
+            </div>
+            <p class="text-xs text-gray-400 line-clamp-2 mt-1 leading-relaxed">${item.description}</p>
+          </div>
+
+          <div class="flex items-center justify-between mt-2 pt-2 border-t border-brand-border/40">
+            <div class="flex flex-wrap gap-1 overflow-hidden h-5">
+              ${tagsHtml}
+            </div>
+            
+            <button class="add-wishlist-fast-btn w-7 h-7 rounded-full bg-brand-darkBg hover:bg-brand-gold hover:text-black border border-brand-border text-gray-300 flex items-center justify-center transition text-xs" title="Bookmark Dish">
+              <i class="fa-solid ${isInWishlist(item.id) ? 'fa-bookmark text-brand-gold' : 'fa-plus'}"></i>
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Open detail modal when clicking card body
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.add-wishlist-fast-btn')) {
+          e.stopPropagation();
+          toggleWishlist(item);
+          renderMenu(); // refresh icon state
+        } else {
+          openItemModal(item);
+        }
+      });
+
+      return card;
+    }
+
+    // MODAL LOGIC
+    function openItemModal(item) {
+      activeModalItem = item;
+      modalImg.src = item.image;
+      modalTitle.textContent = item.name;
+      modalPrice.textContent = formatPrice(item.price);
+      modalDesc.textContent = item.description;
+      modalCalories.textContent = item.calories || "N/A";
+      modalAllergens.textContent = item.allergens || "None declared";
+
+      // Tags
+      modalTags.innerHTML = (item.tags || []).map(tag => `
+        <span class="text-xs px-2 py-0.5 rounded-md bg-brand-darkBg text-brand-gold border border-brand-gold/30 font-medium">${tag}</span>
+      `).join('');
+
+      // Update button state
+      updateModalWishlistBtn();
+
+      itemModal.classList.remove('opacity-0', 'pointer-events-none');
+      itemModal.firstElementChild.classList.remove('translate-y-10');
+    }
+
+    function closeModal() {
+      itemModal.classList.add('opacity-0', 'pointer-events-none');
+      itemModal.firstElementChild.classList.add('translate-y-10');
+      activeModalItem = null;
+    }
+
+    function updateModalWishlistBtn() {
+      if (!activeModalItem) return;
+      const exists = isInWishlist(activeModalItem.id);
+      if (exists) {
+        modalAddWishlistBtn.className = "w-full py-3.5 px-4 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 font-semibold text-sm flex items-center justify-center gap-2 transition";
+        modalAddWishlistBtn.innerHTML = `<i class="fa-solid fa-trash text-xs"></i> <span>Remove from Wishlist</span>`;
+      } else {
+        modalAddWishlistBtn.className = "w-full py-3.5 px-4 rounded-xl bg-brand-gold hover:bg-brand-goldHover text-black font-semibold text-sm flex items-center justify-center gap-2 transition shadow-lg shadow-brand-gold/10";
+        modalAddWishlistBtn.innerHTML = `<i class="fa-solid fa-bookmark text-xs"></i> <span>Save to My Order Wishlist</span>`;
+      }
+    }
+
+    // WISHLIST LOGIC
+    function toggleWishlist(item) {
+      const index = wishlist.findIndex(w => w.id === item.id);
+      if (index > -1) {
+        wishlist.splice(index, 1);
+      } else {
+        wishlist.push({ ...item, quantity: 1 });
+      }
+      updateWishlistUI();
+    }
+
+    function isInWishlist(itemId) {
+      return wishlist.some(w => w.id === itemId);
+    }
+
+    function updateWishlistUI() {
+      // Badge count
+      const totalCount = wishlist.reduce((acc, curr) => acc + curr.quantity, 0);
+      wishlistBadge.textContent = totalCount;
+      if (totalCount > 0) {
+        wishlistBadge.classList.remove('opacity-0', 'scale-75');
+      } else {
+        wishlistBadge.classList.add('opacity-0', 'scale-75');
+      }
+
+      // Drawer Items Render
+      wishlistItemsContainer.innerHTML = '';
+
+      if (wishlist.length === 0) {
+        wishlistItemsContainer.innerHTML = `
+          <div class="text-center py-12 space-y-3">
+            <i class="fa-solid fa-bookmark text-3xl text-brand-border"></i>
+            <p class="text-sm text-brand-muted">Your wishlist is empty.</p>
+            <p class="text-xs text-gray-500">Tap the "+" on any dish to bookmark it for your order.</p>
+          </div>
+        `;
+      } else {
+        wishlist.forEach(item => {
+          const row = document.createElement('div');
+          row.className = "flex items-center justify-between gap-3 bg-brand-darkBg p-3 rounded-xl border border-brand-border";
+          row.innerHTML = `
+            <img src="${item.image}" class="w-12 h-12 rounded-lg object-cover">
+            <div class="flex-1 min-w-0">
+              <h5 class="text-xs font-bold text-white truncate">${item.name}</h5>
+              <span class="text-xs text-brand-gold font-sans">${formatPrice(item.price)}</span>
+            </div>
+            <button class="remove-wishlist-item text-gray-500 hover:text-red-400 p-2 transition">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          `;
+          row.querySelector('.remove-wishlist-item').addEventListener('click', () => {
+            toggleWishlist(item);
+            renderMenu();
+          });
+          wishlistItemsContainer.appendChild(row);
+        });
+      }
+
+      // Calculate Total
+      const totalSum = wishlist.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0);
+      wishlistTotalPrice.textContent = formatPrice(totalSum);
+    }
+
+    function openWishlistDrawer() {
+      wishlistDrawer.classList.remove('opacity-0', 'pointer-events-none');
+      wishlistPanel.classList.remove('translate-x-full');
+    }
+
+    function closeWishlistDrawer() {
+      wishlistDrawer.classList.add('opacity-0', 'pointer-events-none');
+      wishlistPanel.classList.add('translate-x-full');
+    }
+
+    // HELPER UTILS
+    function formatPrice(val) {
+      return `$${Number(val).toFixed(2)}`;
+    }
+
+    function resetSearch() {
+      searchQuery = "";
+      searchInput.value = "";
+      clearSearchBtn.classList.add('hidden');
+      searchResultsLabel.classList.add('hidden');
+      renderMenu();
+    }
+
+    // EVENT LISTENERS
+    function setupEventListeners() {
+      // Search toggles
+      searchToggleBtn.addEventListener('click', () => {
+        searchBarContainer.classList.toggle('hidden');
+        if (!searchBarContainer.classList.contains('hidden')) {
+          searchInput.focus();
+        }
+      });
+
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value.trim();
+        if (searchQuery.length > 0) {
+          clearSearchBtn.classList.remove('hidden');
+          searchResultsLabel.classList.remove('hidden');
+          searchKeywordSpan.textContent = searchQuery;
+        } else {
+          clearSearchBtn.classList.add('hidden');
+          searchResultsLabel.classList.add('hidden');
+        }
+        renderMenu();
+      });
+
+      clearSearchBtn.addEventListener('click', resetSearch);
+
+      // Modal Events
+      closeModalBtn.addEventListener('click', closeModal);
+      itemModal.addEventListener('click', (e) => {
+        if (e.target === itemModal) closeModal();
+      });
+
+      modalAddWishlistBtn.addEventListener('click', () => {
+        if (activeModalItem) {
+          toggleWishlist(activeModalItem);
+          updateModalWishlistBtn();
+          renderMenu();
+        }
+      });
+
+      // Wishlist Drawer Events
+      cartDrawerToggle.addEventListener('click', openWishlistDrawer);
+      closeWishlistBtn.addEventListener('click', closeWishlistDrawer);
+      wishlistDrawer.addEventListener('click', (e) => {
+        if (e.target === wishlistDrawer) closeWishlistDrawer();
+      });
+    }
+  </script>
+</body>
+</html>
